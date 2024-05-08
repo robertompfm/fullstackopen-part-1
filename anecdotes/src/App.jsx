@@ -7,7 +7,7 @@ const Anecdote = ({ anecdote }) => <p>{anecdote}</p>
 const Button = ({ onClick, label }) => <button onClick={onClick}>{label}</button>
 
 const App = () => {
-  const anecdotesList = [
+  const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
     'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
@@ -19,7 +19,7 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-  const [anecdotes, setAnecdotes] = useState(anecdotesList.map((anecdote) => ({ anecdote, votes: 0 })))
+  const [points, setPoints] = useState(anecdotes.map((_anecdote) => 0))
 
   const handleNextAnecdote = () => {
     const newSelected = Math.floor(Math.random() * anecdotes.length)
@@ -28,23 +28,23 @@ const App = () => {
   }
 
   const handleVote = () => {
-    const updatedAnecdotes = [ ...anecdotes ]
+    const updatedPoints = [ ...points ]
 
-    updatedAnecdotes[selected].votes += 1
+    updatedPoints[selected] += 1
 
-    setAnecdotes(updatedAnecdotes)
+    setPoints(updatedPoints)
   }
 
-  const mostVoted = anecdotes.toSorted((a, b) => b.votes - a.votes)[0]
+  const mostVoted = points.reduce((maxIdx, point, currIdx, arr) => point > arr[maxIdx] ? currIdx : maxIdx, 0)
 
   return (
     <div>
       <SectionHeader title={'Anecdote of the day'} />
-      <Anecdote anecdote={anecdotes[selected].anecdote} />
+      <Anecdote anecdote={anecdotes[selected]} />
       <Button onClick={handleVote} label={'vote'} />
       <Button onClick={handleNextAnecdote} label={'next anecdote'} />
       <SectionHeader title={'Anecdote with most votes'} />
-      <Anecdote anecdote={mostVoted.anecdote} />
+      <Anecdote anecdote={anecdotes[mostVoted]} />
     </div>
   )
 }
